@@ -4,8 +4,8 @@ window.socket = io.connect('http://192.168.1.5:5001');
 window.mainRoom = "example";
 window.myStream;
 
-$('#username').html('<b>Usuario</b> : ' + mainUsername);
-$('#chatname').html('<b>Chat</b> : ' + mainRoom);
+$('#username').html('<b>Usuer</b> : ' + mainUsername);
+$('#chatname').html('<b>Room</b> : ' + mainRoom);
 
 window.myStream;
 window.videoRTCController = new VideoRTCController();
