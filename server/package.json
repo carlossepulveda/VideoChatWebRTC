@@ -1,0 +1,11 @@
+{
+    "name": "VideoChat",
+    "version": "0.0.1",
+    "description": "A simple video chat app",
+    "dependencies": {
+        "socket.io": "~1.0.6",
+        "express": "~4.8.6",
+        "jade": "*"
+    },
+    "author": "developer"
+}
