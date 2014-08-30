@@ -1,6 +1,6 @@
 window.mainUsername = new Date().getTime();
 window.members = [];
-window.socket = io.connect('http://192.168.1.5:5001');
+window.socket = io.connect('http://' + document.domain + ':' + location.port);
 window.mainRoom = "example";
 window.myStream;
 
@@ -40,7 +40,6 @@ function start(stream) {
     });
 
     socket.on('onTextMessage', function(data) {
-        console.log(data);
         var labelUser = data.user;
         if (data.user == mainUsername) {
             labelUser = 'ME';
@@ -68,9 +67,21 @@ function start(stream) {
     });
 
     $('#send').click(function() {
-        socket.emit('textMessage', {room : mainRoom, text : $('#field').val(), user : mainUsername});
-        $('#field').val('');
+        if ($('#field').val().length > 0) {
+            sendMessage($('#field').val());
+        }
     });
+
+    $('#field').keyup(function(e) {
+        if (e.keyCode == 13 && $('#field').val().length > 0) {
+            sendMessage($('#field').val());
+        }
+    });
+
+    function sendMessage(text) {
+        socket.emit('textMessage', {room : mainRoom, text : text, user : mainUsername});
+        $('#field').val('');
+    }
 
     function showNewMember(user) {
         if (user.username != mainUsername) {

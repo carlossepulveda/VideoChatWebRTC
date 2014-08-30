@@ -1,7 +1,7 @@
 function VideoRTCController() {
 
-	var that = this;
-	var connection = false;
+    var that = this;
+    var connection = false;
     var peerConfig =   {iceServers: [] };
     var othersSDPs = [];
     var othersCandidates = [];
@@ -11,8 +11,7 @@ function VideoRTCController() {
         if (username != window.mainUsername) {
             if( typeof(RTCPeerConnection) === 'function') {
                 peerConnection = new RTCPeerConnection(peerConfig);
-            }
-            else if( typeof(webkitRTCPeerConnection) === 'function') {
+            } else if( typeof(webkitRTCPeerConnection) === 'function') {
                 peerConnection = new webkitRTCPeerConnection(peerConfig);
             }
 
@@ -31,8 +30,7 @@ function VideoRTCController() {
             };
 
             peerConnection.createOffer(function(SDP){
-                peerConnection.setLocalDescription(SDP);
-                
+                peerConnection.setLocalDescription(SDP);                
                 window.socket.emit('sendOfferToUser', {username : window.mainUsername, to : username, room : mainRoom, payload : SDP});
             });
         }
@@ -97,7 +95,7 @@ function VideoRTCController() {
     };
 
     var createRTCIceCandidate = function(candidate){
-    	if( typeof(webkitRTCIceCandidate) === 'function') {
+        if( typeof(webkitRTCIceCandidate) === 'function') {
             return new webkitRTCIceCandidate(candidate);
         } else if( typeof(RTCIceCandidate) === 'function') {
             return new RTCIceCandidate(candidate);
@@ -113,28 +111,28 @@ function VideoRTCController() {
 
         // add icecandidates immediately if not Firefox & if remoteDescription is set
         if(othersSDPs.length > 0 && iceCandidate.candidate && iceCandidate.candidate !== null ) {
-        	var candidate = createRTCIceCandidate(iceCandidate.candidate);
-       		try {
-                peerConnection.addIceCandidate(candidate, function(){}, function(e){console.error(e, iceCandidate, peerConnection)});	
+            var candidate = createRTCIceCandidate(iceCandidate.candidate);
+            try {
+                peerConnection.addIceCandidate(candidate, function(){}, function(e){console.error(e, iceCandidate, peerConnection)});   
             } catch(e){console.error(e);}
         }
     };
 
     //came offer
     window.socket.on('sendOfferToUser', function(data) {
- 		if (data.user != window.mainUsername) {
-            addSDP(data.payload, data.from);
-        	createAnswer(othersSDPs[data.from], data.from);
- 		}
- 	});
-
-    //came answer
- 	window.socket.on('sendAnswerToUser', function(data) {
         if (data.user != window.mainUsername) {
             addSDP(data.payload, data.from);
-	        handshakeDone(othersSDPs[data.from], data.from);
-	    }
- 	});
+            createAnswer(othersSDPs[data.from], data.from);
+        }
+    });
+
+    //came answer
+    window.socket.on('sendAnswerToUser', function(data) {
+        if (data.user != window.mainUsername) {
+            addSDP(data.payload, data.from);
+            handshakeDone(othersSDPs[data.from], data.from);
+        }
+    });
 
     window.socket.on('sendIceCandidateToUser', function(data) {
         setIceCandidates(data.payload, data.from);
